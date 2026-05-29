@@ -1,0 +1,24 @@
+# STM32 Cube IDE / MDK-ARM Build Artifacts
+MDK-ARM/DebugConfig/
+MDK-ARM/EventRecorderStub.scvd
+MDK-ARM/*.uvguix.*
+MDK-ARM/*.uvoptx
+MDK-ARM/startup_stm32f103xe.lst
+MDK-ARM/f103rc_mpu6050/*.o
+MDK-ARM/f103rc_mpu6050/*.d
+MDK-ARM/f103rc_mpu6050/*.crf
+MDK-ARM/f103rc_mpu6050/*.dep
+MDK-ARM/f103rc_mpu6050/*.hex
+MDK-ARM/f103rc_mpu6050/*.axf
+MDK-ARM/f103rc_mpu6050/*.map
+MDK-ARM/f103rc_mpu6050/*.lnk
+MDK-ARM/f103rc_mpu6050/*.htm
+MDK-ARM/f103rc_mpu6050/*.sct
+MDK-ARM/RTE/
+
+# IDE Files
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
