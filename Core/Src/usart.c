@@ -23,6 +23,13 @@
 
 /* USER CODE BEGIN 0 */
 #include <stdio.h>
+
+#define UART_CMD_BUF_SIZE   32
+
+volatile uint8_t uart_cmd_flag = 0;
+          char uart_cmd_buf[UART_CMD_BUF_SIZE] = {0};
+static    uint8_t rx_byte = 0;
+static    uint8_t uart_cmd_idx = 0;
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -52,7 +59,7 @@ void MX_USART1_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART1_Init 2 */
-
+  HAL_UART_Receive_IT(&huart1, &rx_byte, 1);
   /* USER CODE END USART1_Init 2 */
 
 }
@@ -64,7 +71,8 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
   if(uartHandle->Instance==USART1)
   {
   /* USER CODE BEGIN USART1_MspInit 0 */
-
+  HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(USART1_IRQn);
   /* USER CODE END USART1_MspInit 0 */
     /* USART1 clock enable */
     __HAL_RCC_USART1_CLK_ENABLE();
@@ -114,6 +122,24 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart != &huart1) return;
+
+    if (rx_byte == '\r' || rx_byte == '\n')
+    {
+        uart_cmd_buf[uart_cmd_idx] = '\0';
+        uart_cmd_flag = 1;
+        uart_cmd_idx = 0;
+    }
+    else if (uart_cmd_idx < UART_CMD_BUF_SIZE - 1)
+    {
+        uart_cmd_buf[uart_cmd_idx++] = rx_byte;
+    }
+
+    HAL_UART_Receive_IT(&huart1, &rx_byte, 1);
+}
+
 int fputc(int ch, FILE *f)
 {
     HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 1000);

@@ -1,0 +1,19 @@
+function [raw, mcu_filt] = fcn()
+%#codegen
+    coder.extrinsic('get_serial_data');
+    persistent last_raw last_filt
+    if isempty(last_raw)
+        last_raw = 0;
+        last_filt = 0;
+    end
+    try
+        [r, m] = get_serial_data();
+        if ~isnan(r) && ~isnan(m)
+            last_raw = r;
+            last_filt = m;
+        end
+    catch
+    end
+    raw = last_raw;
+    mcu_filt = last_filt;
+end

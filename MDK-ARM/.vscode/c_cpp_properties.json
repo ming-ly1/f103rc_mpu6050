@@ -9,6 +9,7 @@
                 "c:\\Users\\21834\\Desktop\\Cube_Stm32\\f103rc_mpu6050\\Drivers\\CMSIS\\Device\\ST\\STM32F1xx\\Include",
                 "c:\\Users\\21834\\Desktop\\Cube_Stm32\\f103rc_mpu6050\\Drivers\\CMSIS\\Include",
                 "c:\\Users\\21834\\Desktop\\Cube_Stm32\\f103rc_mpu6050\\Hardware",
+                "c:\\Users\\21834\\Desktop\\Cube_Stm32\\f103rc_mpu6050\\Mylib",
                 "D:\\MDK\\ARM\\ARMCLANG\\include",
                 "D:\\MDK\\ARM\\ARMCLANG\\include\\arm_linux",
                 "D:\\MDK\\ARM\\ARMCLANG\\include\\arm_linux_compat",

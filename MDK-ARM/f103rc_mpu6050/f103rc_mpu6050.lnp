@@ -21,6 +21,7 @@
 "f103rc_mpu6050\stm32f1xx_hal_uart.o"
 "f103rc_mpu6050\system_stm32f1xx.o"
 "f103rc_mpu6050\mpu6050.o"
+"f103rc_mpu6050\filter.o"
 --library_type=microlib --strict --scatter "f103rc_mpu6050\f103rc_mpu6050.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

@@ -2,6 +2,7 @@
 #define MPU6050_H
 
 #include "stdint.h"
+#include "filter.h"
 
 #define MPU6050_ADDR                            0xD0
 #define MPU6050_WRITE_REG                       0xD0
@@ -23,26 +24,39 @@
 #define MPU6050_ACC_OUT                         0x3B
 #define MPU6050_GYRO_OUT                        0x43
 
-
-struct axis{
+#define ZERO_MOVE_COUNT                         300
+typedef struct axis{
     int16_t x;
     int16_t y;
     int16_t z;
-};
+}   axis_t;
 
-struct euler_angles{
+typedef struct euler_angles{
     float roll;
     float pitch;
     float yaw;  
-};
+}   euler_angles_t;
 
-struct mpu6050_data{
+typedef struct {
+    axis_t acc;
+    axis_t gyro;
+}  zero_move_t;
+
+typedef struct {
     struct axis acc;
     struct axis gyro;
     struct euler_angles euler_angle;
-};
-
+    
+}  mpu6050_data_t;
 
 void mpu6050_init(void);
 void mpu6050_get_acc(struct axis *acc_data);
-#endif 
+void mpu6050_get_gyro(struct axis *gyro_data);
+void mpu6050_get_gyro_filter(struct axis *gyro_data);
+void mpu6050_get_acc_filter(struct axis *acc_data);
+void mpu6050_calculate_zero_move(zero_move_t *zero_move_data);
+// void mpu6050_get_euler_angle(struct euler_angles *euler_angle_data);
+
+extern KalmanFilter_t mpu6050_acc_kalman_data[3];
+#endif
+

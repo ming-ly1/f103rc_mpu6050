@@ -26,7 +26,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <stdlib.h>
 #include "mpu6050.h"
+#include "filter.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,13 +49,14 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+mpu6050_data_t mpu6050, mpu6050_filter;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+static void UART_ParseCmd(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -69,7 +72,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  struct mpu6050_data mpu6050;
+  
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -94,15 +97,18 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   mpu6050_init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    UART_ParseCmd();
     mpu6050_get_acc(&mpu6050.acc);
-    printf("acc:%d, %d, %d\r\n", mpu6050.acc.x, mpu6050.acc.y, mpu6050.acc.z);
-    HAL_Delay(100);
+    mpu6050_get_acc_filter(&mpu6050_filter.acc);
+    printf("acc:%6d, %6d \r\n", mpu6050.acc.x, mpu6050_filter.acc.x);
+    HAL_Delay(4);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -150,7 +156,29 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+static void UART_ParseCmd(void)
+{
+    float val;
+    int i;
 
+    if (!uart_cmd_flag) return;
+    uart_cmd_flag = 0;
+
+    if (uart_cmd_buf[0] == 'Q' || uart_cmd_buf[0] == 'q')
+    {
+        val = atof((char *)uart_cmd_buf + 2);
+        for (i = 0; i < 3; i++)
+            Kalman_SetQ(&mpu6050_acc_kalman_data[i], val);
+        printf("Q = %.2f\r\n", val);
+    }
+    else if (uart_cmd_buf[0] == 'R' || uart_cmd_buf[0] == 'r')
+    {
+        val = atof((char *)uart_cmd_buf + 2);
+        for (i = 0; i < 3; i++)
+            Kalman_SetR(&mpu6050_acc_kalman_data[i], val);
+        printf("R = %.2f\r\n", val);
+    }
+}
 /* USER CODE END 4 */
 
 /**
